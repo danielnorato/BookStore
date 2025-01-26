@@ -2,32 +2,61 @@ package com.example.BookStore.model;
 
 import jakarta.persistence.*;
 
-@Entity
-@Table(name = "books")
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.UUID;
+import java.util.Set;
 
+@Entity
+@Table(name = "TB_BOOK")
+public class Book implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+    @Column(nullable = false, unique = true)
     private String title;
     private String author;
     private String isbn;
 
-    public Book(){
+    @ManyToOne
+    @JoinColumn(name = "publisher_id")
+    private Publisher publisher;
+
+    @ManyToMany
+    @JoinTable(
+            name= "tb_book_author",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
+    private Set<Author> authors = new HashSet<>();
+
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
+    private Review review;
+
+    public Review getReview() {
+        return review;
     }
 
-    public Book(String title, String author, String isbn){
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-    }
-    // Getters and setters
-    public Long getId() {
-        return id;
+    public void setReview(Review review) {
+        this.review = review;
     }
 
-    public void setId(Long id) {
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -54,4 +83,11 @@ public class Book {
         this.isbn = isbn;
     }
 
+    public Set<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
 }
