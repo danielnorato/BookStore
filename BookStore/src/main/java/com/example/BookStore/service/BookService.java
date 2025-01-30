@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class BookService {
@@ -21,7 +22,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Optional<Book> getBookById(Long id){
+    public Optional<Book> getBookById(UUID id){
         return bookRepository.findById(id);
     }
 
@@ -29,7 +30,7 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    public void deleteBook(Long id){
+    public void deleteBook(UUID id){
         if (bookRepository.existsById(id)){
             bookRepository.deleteById(id);
         } else {
